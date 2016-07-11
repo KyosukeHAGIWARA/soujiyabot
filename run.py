@@ -27,19 +27,19 @@ def search_user_im_id(user_name):
     return user_im_id
 
 if __name__ == "__main__":
-    slack = Slacker(slackbot_settings.API_TOKEN)
+    # slack = Slacker(slackbot_settings.API_TOKEN)
+    #
+    # rawashi_im_id = search_user_im_id("rawashi")
+    #
+    # slack.chat.post_message(
+    #     rawashi_im_id,
+    #     "## name : is_bot ##",
+    #     as_user=True)
+    # for user in users:
+    #     slack.chat.post_message(
+    #         rawashi_im_id,
+    #         str(user["name"]) + " : " + str(user["is_bot"]),
+    #         as_user=True)
 
-    rawashi_im_id = search_user_im_id("rawashi")
 
-    slack.chat.post_message(
-        rawashi_im_id,
-        "## name : is_bot ##",
-        as_user=True)
-    for user in users:
-        slack.chat.post_message(
-            rawashi_im_id,
-            str(user["name"]) + " : " + str(user["is_bot"]),
-            as_user=True)
-
-
-    # main()
+    main()

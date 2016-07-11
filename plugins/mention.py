@@ -1,6 +1,6 @@
 from slackbot.bot import respond_to
 
-@respond_to('疲れた')
-@respond_to('つかれた')
+@respond_to("hogehoge")
+@respond_to("nurupo")
 def cheer(message):
-    message.reply('ファイト!')
+    message.reply("ga!")

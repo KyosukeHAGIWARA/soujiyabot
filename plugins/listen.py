@@ -1,10 +1,9 @@
 from slackbot.bot import listen_to
 
-@listen_to('あきらめたら')
-@listen_to('諦めたら')
+@listen_to("tukareta")
 def anzai(message):
-    message.send('そこで試合終了ですよ。')
+    message.send("otu")
 
-@listen_to('いいですか')
+@listen_to("harahe")
 def reaction(message):
-    message.react('+1')
+    message.react("+1")

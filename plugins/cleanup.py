@@ -4,7 +4,7 @@ import random
 import math
 import json
 import os
-from slackbot.bot import listen_to
+from slackbot.bot import respond_to
 from slacker import Slacker
 import slackbot_settings
 
@@ -63,10 +63,11 @@ duty_free = []
 duty_member = get_duty_member()
 
 
-@listen_to("clean-up")
+@respond_to("clean-up")
 def clean_up_rotation(message):
     radix = 2
 
+    # json load
     f = open("./plugins/clean_up.json")
     clean_up_data = json.load(f)
     f.close()
@@ -74,19 +75,17 @@ def clean_up_rotation(message):
     unchosen_dict = clean_up_data["ud"]
     choices = clean_up_data["choices"]
     choice_box = struct_cb_from_ud(unchosen_dict, radix)
-    # unchosen_dict = dict([[m, 0] for m in duty_member])
 
     # choose and post
     choice = random.choice(choice_box)
     choices.append(choice)
-
-
     unchosen_dict, choice_box = struct_choice_box(choice, unchosen_dict, radix)
     slack.chat.post_message(
         "bot_test",
-        choice + str(choice_box),
+        choice,
         as_user=True)
 
+    # json overwrite
     os.remove("./plugins/clean_up.json")
     return_json = {"ud": unchosen_dict, "choices": choices}
     f = open("./plugins/clean_up.json", "w")

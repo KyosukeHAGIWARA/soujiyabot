@@ -2,3 +2,4 @@
 __pycache__*
 kakuri*
 *.json
+slackbot_settings.py

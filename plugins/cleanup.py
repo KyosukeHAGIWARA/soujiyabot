@@ -48,7 +48,8 @@ duty_free = ["slackbot"]
 duty_member = get_duty_member()
 
 
-@respond_to("clean-up")
+@respond_to("clean-up duty")
+@respond_to("cd")
 def clean_up_rotation(message):
     radix = 2  # probability ratio
 
@@ -64,7 +65,7 @@ def clean_up_rotation(message):
     choice = random.choice(choice_box)
     chosens_list.append(choice)
     slack.chat.post_message(
-        "bot_test",
+        message.body["channel"],
         choice,
         as_user=True)
 
@@ -82,3 +83,36 @@ def clean_up_rotation(message):
     f = open("./plugins/clean_up.json", "w")
     json.dump(return_json, f)
     f.close()
+
+@respond_to("clean-up reset")
+def reset_chosen_list(message):
+    # load json file and set data
+    f = open("./plugins/clean_up.json")
+    clean_up_data = json.load(f)
+    f.close()
+    # reset data
+    unchosens_dict = dict([[key, 0] for key, value in clean_up_data["ud"].items()])
+    chosens_list = []
+    # renew json file
+    os.remove("./plugins/clean_up.json")
+    return_json = {"ud": unchosens_dict, "chosens_list": chosens_list}
+    f = open("./plugins/clean_up.json", "w")
+    json.dump(return_json, f)
+    f.close()
+
+    slack.chat.post_message(
+        message.body["channel"],
+        "good bye clean-up list",
+        as_user=True)
+
+@respond_to("clean-up statistics")
+def post_statistics(message):
+    # load json file and set data
+    f = open("./plugins/clean_up.json")
+    clean_up_data = json.load(f)
+    f.close()
+
+    slack.chat.post_message(
+        message.body["channel"],
+        str(unique(clean_up_data["chosens_list"])),
+        as_user=True)

@@ -4,7 +4,7 @@ import random
 import math
 import json
 import os
-from slackbot.bot import respond_to
+from slackbot.bot import respond_to, listen_to
 from slacker import Slacker
 import slackbot_settings
 
@@ -50,9 +50,9 @@ duty_member = get_duty_member()
 
 @respond_to("clean-up duty")
 @respond_to("cd")
+@listen_to("clean-up duty")
 def clean_up_rotation(message):
     radix = 2  # probability ratio
-
     # load json file and set data
     f = open("./plugins/clean_up.json")
     clean_up_data = json.load(f)
@@ -64,10 +64,12 @@ def clean_up_rotation(message):
     # choose and post
     choice = random.choice(choice_box)
     chosens_list.append(choice)
+    post_channel = message.body["channel"]
     slack.chat.post_message(
-        message.body["channel"],
-        choice,
-        as_user=True)
+        post_channel,
+        ":rocket: Clean-up duty @" + choice + " :rocket:",
+        as_user=True,
+        link_names=1)
 
     # update unchosens_dict
     ud = dict([[key, value+1] for key, value in unchosens_dict.items()])
@@ -84,7 +86,17 @@ def clean_up_rotation(message):
     json.dump(return_json, f)
     f.close()
 
+
 @respond_to("clean-up reset")
+def reset_chosen_list(message):
+    mee =  "realy? repeat with \"YES\""
+    slack.chat.post_message(
+        message.body["channel"],
+        "realy? say \"clean-up hard-reset\"",
+        as_user=True)
+
+
+@respond_to("clean-up hard-reset")
 def reset_chosen_list(message):
     # load json file and set data
     f = open("./plugins/clean_up.json")
@@ -105,6 +117,7 @@ def reset_chosen_list(message):
         "good bye clean-up list",
         as_user=True)
 
+
 @respond_to("clean-up statistics")
 def post_statistics(message):
     # load json file and set data
@@ -116,3 +129,7 @@ def post_statistics(message):
         message.body["channel"],
         str(unique(clean_up_data["chosens_list"])),
         as_user=True)
+
+if __name__ == "__main__":
+    clean_up_rotation({}, channel="general")
+
